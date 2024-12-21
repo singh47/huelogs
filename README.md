@@ -1,0 +1,2 @@
+# huelogs
+Minimilistic Log Dashboard
