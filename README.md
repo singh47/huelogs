@@ -1,6 +1,8 @@
 # HueLogs
 Minimilistic Log Dashboard for personal projects. Setting up a dashboard for projects at initial stages will save you hastle to integrate and use log aggregators. HueLogs is minimal and quick log monitoring setup for projects at small scale.
 
+![Screenshot 2024-12-21 at 17-10-07 Hue Logs Dashboard](https://github.com/user-attachments/assets/9657b18f-f540-4155-96d1-ab76dcd6ccf3)
+
 ## How to run
 ```
 1. docker compose up --build
@@ -21,3 +23,5 @@ curl -X POST http://127.0.0.1:5000/api/add-log \
 
 ### 2. Python package
 install https://github.com/singh47/hue_logger_py_client
+
+
