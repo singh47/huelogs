@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hue Logs Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        #log-container {
+            height: 70vh;
+            overflow-y: scroll;
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Hue Logs Dashboard</h1>
+        
+        <!-- Search Input -->
+        <div class="mb-3">
+            <input type="text" id="search-input" class="form-control" placeholder="Search logs...">
+            <button id="search-button" class="btn btn-primary mt-2">Search</button>
+            <button id="clear-search" class="btn btn-secondary mt-2">Clear</button>
+        </div>
+        
+        <!-- Log Container -->
+        <div id="log-container"></div>
+    </div>
+
+    <script>
+        const socket = io();
+        let isSearching = false;
+
+        // Handle new log events
+        socket.on("new_log", (log) => {
+            if (!isSearching) {
+                const container = document.getElementById("log-container");
+                const logEntry = document.createElement("div");
+                logEntry.textContent = `[${log.timestamp}] ${log.message}`;
+                container.prepend(logEntry); // Add new log at the top
+            }
+        });
+
+        // Function to fetch logs (with or without a query)
+        async function fetchLogs(url = "/api/logs") {
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const container = document.getElementById("log-container");
+                container.innerHTML = ""; // Clear previous logs
+
+                data.logs.forEach(log => {
+                    const logEntry = document.createElement("div");
+                    logEntry.textContent = `[${log.timestamp}] ${log.message}`;
+                    container.appendChild(logEntry);
+                });
+            } catch (error) {
+                console.error("Error fetching logs:", error);
+            }
+        }
+
+        // Search logs on button click
+        document.getElementById("search-button").addEventListener("click", () => {
+            const query = document.getElementById("search-input").value.trim();
+
+            if (query) {
+                isSearching = true;
+                fetchLogs(`/api/search-logs?q=${encodeURIComponent(query)}`);
+            } else {
+                isSearching = false;
+                fetchLogs(); // Fetch all logs if no query is provided
+            }
+        });
+
+        // Clear search and return to real-time updates
+        document.getElementById("clear-search").addEventListener("click", () => {
+            document.getElementById("search-input").value = "";
+            isSearching = false;
+            fetchLogs(); // Fetch all logs
+        });
+
+        // Fetch logs on page load
+        fetchLogs();
+
+    </script>
+    
+    
+</body>
+</html>
