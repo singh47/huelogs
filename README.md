@@ -1,7 +1,8 @@
 # HueLogs
 Minimilistic Log Dashboard for personal projects. Setting up a dashboard for projects at initial stages will save you hastle to integrate and use log aggregators. HueLogs is minimal and quick log monitoring setup for projects at small scale.
 
-![Screenshot 2024-12-21 at 17-10-07 Hue Logs Dashboard](https://github.com/user-attachments/assets/9657b18f-f540-4155-96d1-ab76dcd6ccf3)
+![ Hue Logs Dashboard](https://github.com/user-attachments/assets/66eaf21c-3511-4518-981a-fc995ce3f547)
+
 
 ## How to run
 ```
