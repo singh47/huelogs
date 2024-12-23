@@ -1,0 +1,112 @@
+body {
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+
+.dashboard-header {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+}
+
+.search-container {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+}
+
+#log-container {
+    height: 65vh;
+    overflow-y: auto;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.log-entry {
+    padding: 0.3rem;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.log-entry:hover {
+    background-color: #f8f9fa;
+}
+
+.log-timestamp {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.filter-badge {
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.search-input-group {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+#search-input {
+    padding-left: 2.5rem;
+}
+
+.btn-toolbar {
+    gap: 0.5rem;
+}
+
+/* Custom scrollbar */
+#log-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#log-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#log-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+#log-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Dark mode toggle styles */
+.dark-mode {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.dark-mode .dashboard-header,
+.dark-mode .search-container,
+.dark-mode #log-container {
+    background-color: #2d2d2d;
+    color: #fff;
+}
+
+.dark-mode .log-entry {
+    border-bottom-color: #3d3d3d;
+}
+
+.dark-mode .log-entry:hover {
+    background-color: #3d3d3d;
+}
