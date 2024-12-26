@@ -14,3 +14,7 @@ EXPOSE 5000
 
 # Run the app with Gunicorn and WebSocket support
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "--worker-class", "eventlet", "app:app"]
+
+# Run the app with Gunicorn and WebSocket support, add the --log-level flag to change the log level
+# CMD ["gunicorn", "-b", "0.0.0.0:5000", "--worker-class", "eventlet", "--log-level", "debug", "app:app"]
+
