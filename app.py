@@ -9,11 +9,11 @@ socketio = SocketIO(app)
 
 # Path to the SQLite database
 # DB_PATH = "logs.db"
+# print("Database path: {DB_PATH}")
 # Path to volume mapping in docker-compose.yml
 volume_path = "/app/data"
 DB_PATH = os.path.join(volume_path, "logs.db")
-# print("Database path: {DB_PATH}")
-print(f"Modified Database path: {DB_PATH}", flush=True) # Added flush=True to print statement
+# print(f"Modified Database path: {DB_PATH}", flush=True) # Added flush=True to print statement
 
 # Initialize the database
 if not os.path.exists(DB_PATH):
