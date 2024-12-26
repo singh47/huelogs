@@ -1,4 +1,8 @@
 // Socket connection handling
+import apiService from './api-service.js';
+import logRenderer from './log-renderer.js';
+import {logCounter, connectionStatus } from './ui-components.js';
+
 const socketHandler = {
     socket: null,
     isSearching: false,
@@ -9,19 +13,24 @@ const socketHandler = {
     },
 
     setupSocketListeners() {
-        this.socket.on("new_log", (log) => {
+        this.socket.on("new_log", async (log) => {
+            const data = await apiService.fetchLogs();
             if (!this.isSearching) {
-                logRenderer.addNewLog(log);
-                logCounter.increment();
+                try {
+                    logRenderer.renderLogs(data.logs);
+                    logCounter.setCount(data.logs.length);
+                } catch (error) {
+                    console.error("Error fetching logs:", error);
+                }
             }
         });
 
         this.socket.on("connect", () => {
-            connectionStatus.setConnected(true);
+           connectionStatus.setConnected(true);
         });
 
         this.socket.on("disconnect", () => {
-            connectionStatus.setConnected(false);
+           connectionStatus.setConnected(false);
         });
     }
 };
