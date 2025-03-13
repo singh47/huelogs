@@ -15,4 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: |
+       docker login --username Mufeth7 --password ${{secrets.NEW}}
+       docker build . --tag ghcr.io/mufeth7/huelogs-ghcr:latest
+       docekr push ghcr.io/mufeth7/huelogs-ghcr:latest
