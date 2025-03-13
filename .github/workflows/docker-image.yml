@@ -31,7 +31,7 @@ jobs:
           
       - name: Build Docker image
         run: |
-          docker build . -t ghcr.io/Mufeth7/huelogs-ghcr:latest
+          docker build . -t ghcr.io/mufeth7/huelogs-ghcr:latest
 
       - name: Push Docker image
         run: |
