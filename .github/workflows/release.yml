@@ -1,1 +1,32 @@
+name: Create GitHub Release on Push
 
+on:
+  push:
+    branches:
+      - main 
+  
+  env:
+     GITHUB_TOKEN: ${{ secrets.PASS }}
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: get node version
+      run: |
+        echo "node_version=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+          node-version: ${{ steps.node-version.outputs.node_version }}
+
+    - name: Semantic Release
+      uses: cycjimmy/semantic-release-action@v4
+      with:
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
