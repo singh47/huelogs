@@ -7,6 +7,7 @@ on:
   
   env:
      GITHUB_TOKEN: ${{ secrets.PASS }}
+     
 jobs:
   create_release:
     runs-on: ubuntu-latest
