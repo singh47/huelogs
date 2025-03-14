@@ -14,10 +14,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: get node version
-      run: |
-        echo "node_version=$(cat.nvmrc)" >> $GITHUB_OUTPUT
-
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
@@ -29,3 +25,5 @@ jobs:
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
+      env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
