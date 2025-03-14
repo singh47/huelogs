@@ -4,10 +4,7 @@ on:
   push:
     branches:
       - main 
-  
-  env:
-     GITHUB_TOKEN: ${{ secrets.PASS }}
-     
+
 jobs:
   create_release:
     runs-on: ubuntu-latest
@@ -31,3 +28,6 @@ jobs:
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
+
+      env:
+      GITHUB_TOKEN: ${{ secrets.PASS }}
