@@ -7,52 +7,26 @@ on:
       - main 
 
 jobs:
-  create_release:
+  release:
+    name: Publish new release
+    if: "!contains(github.event.head_commit.message, 'chore(release)')"
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@v2
+      - name: get node version
+        run: |
+          echo "node_version=$(cat .nvmrc)" >> $GITHUB_OUTPUT
       - name: Setup Node.js
-        id: setup-node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v2
         with:
-          node-version-file: .node-version
-          cache: npm
-
-      - name: Install Dependencies
-        id: npm-ci
-        run: npm ci
-
-      - name: Check Format
-        id: npm-format-check
-        run: npm run format:check
-
-      - name: Lint
-        id: npm-lint
-        run: npm run lint
-
-      - name: Test
-        id: npm-ci-test
-        run: npm run ci-test
-
-  test-action:
-    name: GitHub Actions Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
-
-      - name: Test Local Action
-        id: test-action
-        uses: ./
+          node-version: ${{ steps.node-version.outputs.node_version }}
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
         with:
-          milliseconds: 1000
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+          # You can specify specifying version range for the extra plugins if you prefer.
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
