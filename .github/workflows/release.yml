@@ -51,7 +51,6 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
-          REGISTRY: ghcr.io
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN}}
@@ -63,3 +62,6 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ghcr.io/mufeth7/huelogs:${{ env.VERSION }} 
+        env:  
+          REGISTRY: ghcr.io
+          IMAGE_NAME: ${{ github.repository }}
