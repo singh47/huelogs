@@ -34,7 +34,7 @@ jobs:
 
   build-and-push-image:
     runs-on: ubuntu-latest
-    if: ${{ GITHUB_ENV != '' }}
+    if: ${{ env.VERSION  != '' }}
     permissions:
       contents: read
       packages: write
