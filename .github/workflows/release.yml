@@ -33,6 +33,9 @@ jobs:
       run: echo "VERSION=$(cat releaserc.json | jq -r .version)" >> $GITHUB_ENV
            echo "VERSION=$(cat releaserc.json | jq -r .version)"
 
+    - name: List files for debugging
+      run: ls -R
+
   build-and-push-image:
     runs-on: ubuntu-latest
     # if: ${{ needs.create_release.outputs.release_created == 'true' }}
