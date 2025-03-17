@@ -45,7 +45,7 @@ jobs:
 
   build-and-push-image:
     runs-on: ubuntu-latest
-    if: ${{ env.release_created == 'true' }}
+    if: ${{ needs.create_release.outputs.release_created == 'true' }}
     permissions:
       contents: read
       packages: write
