@@ -28,6 +28,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Get version from release
+      id: get_version
+      run: echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
 
 
   build-and-push-image:
