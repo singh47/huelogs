@@ -36,11 +36,11 @@ jobs:
       id: release_check
       run: |
         if [ -f "release_notes.md" ]; then
-          echo "Release was created"
-          echo "release_created=true" >> $GITHUB_ENV
+            echo "Release was created"
+            echo "::set-output name=release_created::true"
         else
-          echo "No release created"
-          echo "release_created=false" >> $GITHUB_ENV
+            echo "No release created"
+            echo "::set-output name=release_created::false"
 
 
   build-and-push-image:
