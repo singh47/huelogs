@@ -27,6 +27,8 @@ jobs:
             @semantic-release/git
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REGISTRY: ghcr.io
+        IMAGE_NAME: ${{ github.repository }}
 
 
     - name: Get version from release
@@ -62,6 +64,3 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ghcr.io/mufeth7/huelogs:${{ env.VERSION }} 
-        env:  
-          REGISTRY: ghcr.io
-          IMAGE_NAME: ${{ github.repository }}
