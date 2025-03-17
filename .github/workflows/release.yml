@@ -27,4 +27,4 @@ jobs:
             @semantic-release/git
 
           env:
-          github_token: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
