@@ -30,8 +30,8 @@ jobs:
 
     - name: Get version from release
       id: get_version
-      run: echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
-           echo "VERSION=$(cat package.json | jq -r .version)"
+      run: echo "VERSION=$(cat releaserc.json | jq -r .version)" >> $GITHUB_ENV
+           echo "VERSION=$(cat releaserc.json | jq -r .version)"
 
   build-and-push-image:
     runs-on: ubuntu-latest
