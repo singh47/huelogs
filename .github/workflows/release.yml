@@ -31,21 +31,11 @@ jobs:
     - name: Get version from release
       id: get_version
       run: echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
-
-    - name: Set release success
-      id: release_check
-      run: |
-        if [ -f "release_notes.md" ]; then
-            echo "Release was created"
-            echo "::set-output name=release_created::true"
-        else
-            echo "No release created"
-            echo "::set-output name=release_created::false"
-
+           echo "VERSION=$(cat package.json | jq -r .version)"
 
   build-and-push-image:
     runs-on: ubuntu-latest
-    if: ${{ needs.create_release.outputs.release_created == 'true' }}
+    # if: ${{ needs.create_release.outputs.release_created == 'true' }}
     permissions:
       contents: read
       packages: write
