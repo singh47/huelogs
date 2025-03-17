@@ -27,13 +27,16 @@ jobs:
             @semantic-release/git
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        REGISTRY: ghcr.io
-        IMAGE_NAME: ${{ github.repository }}
+
 
     - name: Get version from release
       id: get_version
       run: echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
 
+      env:  
+        REGISTRY: ghcr.io
+        IMAGE_NAME: ${{ github.repository }}
+        
   build-and-push-image:
     runs-on: ubuntu-latest
     permissions:
