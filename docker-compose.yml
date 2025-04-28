@@ -6,3 +6,5 @@ services:
       - "5000:5000"
     volumes:
       - ./data:/app/data
+    environment:
+      - LOGGER_API_KEY=singh47-test
