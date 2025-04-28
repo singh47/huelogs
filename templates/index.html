@@ -25,6 +25,9 @@
                     <button id="fullscreen-toggle" class="btn btn-outline-secondary">
                         <i class="bi bi-fullscreen"></i>
                     </button>
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary" title="Logout">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -41,13 +44,16 @@
                 <div class="col-md-4">
                     <div class="btn-toolbar justify-content-md-end">
                         <button id="search-button" class="btn btn-primary">
-                            <i class="bi bi-search me-1"></i> Search
+                            <i class="bi bi-search me-1"></i>
                         </button>
                         <button id="clear-search" class="btn btn-secondary">
-                            <i class="bi bi-x-circle me-1"></i> Clear
+                            <i class="bi bi-x-circle me-1"></i>
                         </button>
                         <button id="export-logs" class="btn btn-success">
-                            <i class="bi bi-download me-1"></i> Export
+                            <i class="bi bi-download me-1"></i>
+                        </button>
+                        <button id="auto-refresh-toggle" class="btn btn-warning">
+                            <i class="bi bi-arrow-repeat me-1"></i>
                         </button>
                     </div>
                 </div>

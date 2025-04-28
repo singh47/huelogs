@@ -36,6 +36,12 @@ document.querySelectorAll('.filter-badge').forEach(badge => {
     });
 });
 
+document.getElementById("auto-refresh-toggle").addEventListener("click", () => {
+    socketHandler.toggleAutoRefresh();
+    const button = document.getElementById("auto-refresh-toggle");
+    button.textContent = `Auto Refresh: ${socketHandler.autoRefresh ? "ON" : "OFF"}`;
+});
+
 // Trigger search on Enter key press
 searchInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
