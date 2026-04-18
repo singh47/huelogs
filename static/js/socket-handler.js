@@ -1,51 +1,64 @@
-// Socket connection handling
-import apiService from "./api-service.js";
-import logRenderer from "./log-renderer.js";
-import { logCounter, connectionStatus } from "./ui-components.js";
+// WebSocket connection — replaces Socket.IO with the browser's native API.
+// The Go server sends raw JSON objects over a plain WebSocket; no Socket.IO
+// framing or handshake is needed.
+import logRenderer from './log-renderer.js';
+import { logCounter, connectionStatus } from './ui-components.js';
 
 const socketHandler = {
     socket: null,
     isSearching: false,
-    autoRefresh: true, // New flag to control auto-refresh
+    autoRefresh: true,
+    _reconnectDelay: 1000, // ms, doubles on each failed attempt up to 30 s
 
     init() {
-        this.socket = io();
-        this.setupSocketListeners();
+        this._connect();
     },
 
-    setupSocketListeners() {
-        this.socket.on("new_log", (log) => {
-            if (!this.isSearching && this.autoRefresh) {  // Prevent updates if searching or auto-refresh is off
+    _connect() {
+        const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        this.socket = new WebSocket(`${proto}//${window.location.host}/ws`);
+
+        this.socket.onopen = () => {
+            connectionStatus.setConnected(true);
+            this._reconnectDelay = 1000; // reset backoff on successful connect
+        };
+
+        this.socket.onmessage = (event) => {
+            if (!this.isSearching && this.autoRefresh) {
                 try {
-                    logRenderer.addNewLog(log);  // Append only the new log
-                    logCounter.increment(); // Increment count instead of reloading everything
-                    this.enforceLogLimit(); // Ensure log list doesn't get too long
-                } catch (error) {
-                    console.error("Error handling new log:", error);
+                    const log = JSON.parse(event.data);
+                    logRenderer.addNewLog(log);
+                    logCounter.increment();
+                    this._enforceLogLimit();
+                } catch (err) {
+                    console.error('Failed to parse WebSocket message:', err);
                 }
             }
-        });
+        };
 
-        this.socket.on("connect", () => {
-            connectionStatus.setConnected(true);
-        });
-
-        this.socket.on("disconnect", () => {
+        this.socket.onclose = () => {
             connectionStatus.setConnected(false);
-        });
+            // Exponential backoff — reconnect without hammering the server.
+            setTimeout(() => this._connect(), this._reconnectDelay);
+            this._reconnectDelay = Math.min(this._reconnectDelay * 2, 30_000);
+        };
+
+        this.socket.onerror = () => {
+            // onclose fires immediately after onerror, so reconnect is handled there.
+            connectionStatus.setConnected(false);
+        };
     },
 
-    enforceLogLimit(maxLogs = 100) {
-        const logContainer = document.getElementById("log-container");
-        while (logContainer.children.length > maxLogs) {
-            logContainer.removeChild(logContainer.lastChild);
+    _enforceLogLimit(maxLogs = 100) {
+        const container = document.getElementById('log-container');
+        while (container.children.length > maxLogs) {
+            container.removeChild(container.lastChild);
         }
     },
 
     toggleAutoRefresh() {
         this.autoRefresh = !this.autoRefresh;
-        console.log(`Auto Refresh: ${this.autoRefresh ? "ON" : "OFF"}`);
-    }
+    },
 };
 
 export default socketHandler;

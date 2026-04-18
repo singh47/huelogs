@@ -1,10 +1,50 @@
 version: "3.9"
+
 services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    environment:
+      - POSTGRES_DB=huelogs
+      - POSTGRES_USER=huelogs
+      - POSTGRES_PASSWORD=huelogs_dev_password
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U huelogs -d huelogs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
   hue-logs:
     build: .
     ports:
       - "5000:5000"
-    volumes:
-      - ./data:/app/data
     environment:
-      - LOGGER_API_KEY=singh47-test
+      - LOGGER_API_KEY=change-me-before-deploying
+      - SECRET_KEY=change-me-before-deploying
+      - DATABASE_URL=postgresql://huelogs:huelogs_dev_password@timescaledb:5432/huelogs
+      - REDIS_URL=redis://redis:6379
+      - SESSION_COOKIE_SECURE=false
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  timescale_data:

@@ -1,0 +1,15 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+data/
+*.db
+*.sqlite
+.env
+*.env
+docs/
+README.md
+app/

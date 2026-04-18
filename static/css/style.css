@@ -90,6 +90,28 @@ body {
     background: #a8a8a8;
 }
 
+/* Log level row tinting */
+.log-level-error   { background-color: rgba(220, 53, 69, 0.06); }
+.log-level-warning { background-color: rgba(255, 193, 7, 0.08); }
+.log-level-debug   { color: #6c757d; }
+
+/* Level badges */
+.log-level-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    margin-right: 0.4rem;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+}
+.log-level-badge-info     { background: #e7f3ff; color: #0c63e4; }
+.log-level-badge-debug    { background: #f0f0f0; color: #6c757d; }
+.log-level-badge-warning  { background: #fff8e1; color: #b45309; }
+.log-level-badge-error    { background: #fde8ea; color: #b91c1c; }
+.log-level-badge-critical { background: #b91c1c; color: #fff; }
+
 /* Dark mode toggle styles */
 .dark-mode {
     background-color: #1a1a1a;
@@ -110,3 +132,11 @@ body {
 .dark-mode .log-entry:hover {
     background-color: #3d3d3d;
 }
+
+.dark-mode .log-level-error   { background-color: rgba(220, 53, 69, 0.15); }
+.dark-mode .log-level-warning { background-color: rgba(255, 193, 7, 0.12); }
+.dark-mode .log-level-badge-info     { background: #1e3a5f; color: #93c5fd; }
+.dark-mode .log-level-badge-debug    { background: #3d3d3d; color: #9ca3af; }
+.dark-mode .log-level-badge-warning  { background: #3d2c00; color: #fcd34d; }
+.dark-mode .log-level-badge-error    { background: #450a0a; color: #fca5a5; }
+.dark-mode .log-level-badge-critical { background: #7f1d1d; color: #fecaca; }
