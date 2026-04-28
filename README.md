@@ -4,7 +4,37 @@ Minimilistic Log Dashboard for personal projects. Setting up a dashboard for pro
 ![ Hue Logs Dashboard](https://github.com/user-attachments/assets/66eaf21c-3511-4518-981a-fc995ce3f547)
 
 
-## How to run
+## Deploy with Docker Compose
+
+**1. Set secrets in `docker-compose.yml`** — change all three values before starting:
+
+| Variable | Description |
+|---|---|
+| `LOGGER_API_KEY` | Key used to authenticate log ingestion and dashboard login |
+| `SECRET_KEY` | Random string used to sign session cookies |
+| `POSTGRES_PASSWORD` | DB password — update both the `timescaledb` env and the `DATABASE_URL` in `hue-logs` to match |
+
+If you're serving over HTTPS, also set `SESSION_COOKIE_SECURE=true` in the `hue-logs` service.
+
+**2. Start the stack:**
+
+```bash
+docker compose up --build -d
+```
+
+TimescaleDB and Redis must pass their health checks before the app starts — this is handled automatically.
+
+**3. Open the dashboard:**
+
+```
+http://<your-host>:5000/
+```
+
+Log in with the `LOGGER_API_KEY` you set above.
+
+---
+
+## How to run locally
 ```
 1. docker compose up --build
 
