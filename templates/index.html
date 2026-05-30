@@ -1,107 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hue Logs Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/static/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>huelogs</title>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
-
 <body>
-    <div class="container py-4">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">
-                <i class="bi bi-terminal-fill me-2"></i> Hue Logs Dashboard
-            </h1>
-            <div class="btn-group">
-                <button id="theme-toggle" class="btn btn-outline-secondary" title="Toggle Theme">
-                    <i class="bi bi-moon-fill"></i>
-                </button>
-                <button id="fullscreen-toggle" class="btn btn-outline-secondary" title="Toggle Fullscreen">
-                    <i class="bi bi-fullscreen"></i>
-                </button>
-                <a href="/logout" class="btn btn-outline-secondary" title="Logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-            </div>
-        </div>
 
-        <!-- Controls Panel -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    <div class="flex-grow-1" style="min-width: 250px; max-width: 500px;">
-                        <input type="text" id="search-input" class="form-control" placeholder="Search logs...">
-                    </div>
-                    <button id="search-button" class="btn btn-primary" title="Search">
-                        <i class="bi bi-search"></i>
-                    </button>
-                    <button id="clear-search" class="btn btn-secondary" title="Clear Search">
-                        <i class="bi bi-x-circle"></i>
-                    </button>
-                    <button id="export-logs" class="btn btn-success" title="Export Logs">
-                        <i class="bi bi-download"></i>
-                    </button>
-                    <button id="auto-refresh-toggle" class="btn btn-warning" title="Toggle Auto Refresh">
-                        <i class="bi bi-arrow-repeat me-1"></i>ON
-                    </button>
-                    <div class="ms-auto text-muted small d-flex align-items-center">
-                        <i class="bi bi-circle-fill text-success me-1"></i>
-                        <span id="connection-status">Connected</span>&nbsp;•&nbsp;
-                        <span id="log-count">0</span> entries
-                    </div>
-                </div>
-            </div>
-        </div>
+<div id="app" :class="darkMode ? '' : 'light'">
 
-        <!-- Log Feed -->
-        <div class="card">
-            <div class="card-body p-0">
-                <div id="log-container" class="list-group list-group-flush"></div>
-            </div>
-        </div>
+  <!-- ── Topbar ──────────────────────────────────────────────────────────── -->
+  <header class="topbar">
+    <span class="brand">huelogs</span>
+
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/>
+      </svg>
+      <input
+        v-model="search"
+        @keydown.enter="loadLogs"
+        @input="onSearchInput"
+        type="text"
+        class="search-input"
+        placeholder="Search logs…"
+        spellcheck="false"
+        autocomplete="off"
+      >
+      <button v-if="search" @click="clearSearch" class="search-clear" title="Clear">×</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="/static/js/main.js"></script>
+    <div class="topbar-end">
+      <button @click="liveTail = !liveTail" :class="['live-btn', { active: liveTail }]" title="Toggle live tail">
+        <span :class="['live-dot', connected ? 'connected' : 'disconnected']"></span>
+        {{ liveTail ? 'Live' : 'Paused' }}
+      </button>
+      <button @click="exportLogs" class="icon-btn" title="Export logs">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 1v9M4 7l4 4 4-4M2 14h12"/>
+        </svg>
+      </button>
+      <button @click="toggleDark" class="icon-btn" :title="darkMode ? 'Light mode' : 'Dark mode'">
+        <svg v-if="darkMode" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="8" cy="8" r="3"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.5 3.5l1 1M11.5 11.5l1 1M3.5 12.5l1-1M11.5 4.5l1-1"/>
+        </svg>
+        <svg v-else viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M13.5 9.5a6 6 0 01-7-7 6 6 0 107 7z"/>
+        </svg>
+      </button>
+      <a href="/logout" class="icon-btn" title="Sign out">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6"/>
+        </svg>
+      </a>
+    </div>
+  </header>
 
-    <script>
-        // Theme toggle
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const icon = document.querySelector('#theme-toggle i');
-            icon.classList.toggle('bi-moon-fill');
-            icon.classList.toggle('bi-sun-fill');
-        });
+  <!-- ── Filterbar ───────────────────────────────────────────────────────── -->
+  <div class="filterbar">
+    <div class="level-pills">
+      <button
+        v-for="lvl in LEVELS"
+        :key="lvl"
+        @click="levelFilter = lvl"
+        :class="['pill', `pill-${lvl.toLowerCase()}`, { active: levelFilter === lvl }]"
+      >{{ LABEL[lvl] }}</button>
+    </div>
 
-        // Fullscreen toggle
-        document.getElementById('fullscreen-toggle').addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                document.querySelector('#fullscreen-toggle i').classList.replace('bi-fullscreen', 'bi-fullscreen-exit');
-            } else {
-                document.exitFullscreen();
-                document.querySelector('#fullscreen-toggle i').classList.replace('bi-fullscreen-exit', 'bi-fullscreen');
-            }
-        });
+    <select v-model="serviceFilter" class="service-select">
+      <option value="">All services</option>
+      <option v-for="s in services" :key="s" :value="s">{{ s }}</option>
+    </select>
 
-        // Export — hits the API so we get all fields, not just visible DOM text
-        document.getElementById('export-logs').addEventListener('click', async () => {
-            const resp = await fetch('/api/logs?limit=500');
-            const { logs } = await resp.json();
-            const lines = logs.map(l =>
-                `[${l.level}] [${l.service_name || '-'}] [${l.timestamp}] ${l.message}`
-            ).join('\n');
-            const a = Object.assign(document.createElement('a'), {
-                href: URL.createObjectURL(new Blob([lines], { type: 'text/plain' })),
-                download: 'hue-logs-export.txt',
-            });
-            a.click();
-            URL.revokeObjectURL(a.href);
-        });
-    </script>
+    <span class="filter-stats">{{ displayLogs.length.toLocaleString() }} entries</span>
+  </div>
+
+  <!-- ── Dashboard ──────────────────────────────────────────────────────── -->
+  <div class="dashboard">
+
+    <!-- Stat cards -->
+    <div class="stats-row">
+      <div class="stat-card stat-card-total">
+        <span class="stat-label">Total loaded</span>
+        <span class="stat-value">{{ logs.length.toLocaleString() }}</span>
+      </div>
+      <div class="stat-card stat-card-errors">
+        <span class="stat-label">Errors</span>
+        <span :class="['stat-value', levelCounts.ERROR > 0 ? 'stat-value-error' : '']">
+          {{ levelCounts.ERROR.toLocaleString() }}
+        </span>
+      </div>
+      <div class="stat-card stat-card-warnings">
+        <span class="stat-label">Warnings</span>
+        <span :class="['stat-value', levelCounts.WARNING > 0 ? 'stat-value-warning' : '']">
+          {{ levelCounts.WARNING.toLocaleString() }}
+        </span>
+      </div>
+      <div class="stat-card stat-card-critical">
+        <span class="stat-label">Critical</span>
+        <span :class="['stat-value', levelCounts.CRITICAL > 0 ? 'stat-value-critical' : '']">
+          {{ levelCounts.CRITICAL.toLocaleString() }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-row">
+      <div class="chart-header">
+        <span class="section-label">Log volume · last 30 min</span>
+        <div class="chart-legend">
+          <span v-for="item in LEGEND" :key="item.key" class="legend-item">
+            <span class="legend-dot" :style="{ background: item.color }"></span>
+            {{ item.label }}
+          </span>
+        </div>
+      </div>
+      <div class="chart-area">
+        <canvas ref="chartCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Log table -->
+    <div class="log-table">
+      <div class="log-thead">
+        <span>Time</span>
+        <span>Level</span>
+        <span>Service</span>
+        <span style="padding-left:8px">Message</span>
+      </div>
+
+      <div class="log-tbody">
+        <template v-if="displayLogs.length > 0">
+          <template v-for="log in displayLogs" :key="log.id">
+            <div
+              :class="['log-row', `row-${log.level.toLowerCase()}`, { expanded: expandedId === log.id }]"
+              @click="toggleExpand(log.id)"
+            >
+              <span class="col-time" :title="log.timestamp">{{ reltime(log.timestamp) }}</span>
+              <span class="col-level">
+                <span :class="`badge badge-${log.level.toLowerCase()}`">{{ LABEL[log.level] || log.level }}</span>
+              </span>
+              <span class="col-service">{{ log.service_name || '—' }}</span>
+              <span class="col-msg">{{ log.message }}</span>
+            </div>
+            <div v-if="expandedId === log.id" class="log-detail">
+              <div class="detail-row"><span class="dl">id</span>        <code class="dv">{{ log.id }}</code></div>
+              <div class="detail-row"><span class="dl">timestamp</span> <code class="dv">{{ log.timestamp }}</code></div>
+              <div class="detail-row"><span class="dl">level</span>     <code class="dv">{{ log.level }}</code></div>
+              <div class="detail-row"><span class="dl">service</span>   <code class="dv">{{ log.service_name || '—' }}</code></div>
+              <div class="detail-row"><span class="dl">message</span>   <code class="dv detail-msg">{{ log.message }}</code></div>
+            </div>
+          </template>
+        </template>
+        <div v-else class="log-empty">No logs match the current filters.</div>
+      </div>
+    </div>
+
+  </div><!-- /dashboard -->
+
+</div><!-- /app -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="/static/js/app.js"></script>
 </body>
 </html>

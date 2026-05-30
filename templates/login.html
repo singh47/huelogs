@@ -1,61 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hue Logs — Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        .login-container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 320px;
-            text-align: center;
-        }
-        .login-container h2 { margin-bottom: 1.5rem; }
-        .login-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .login-container button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 0.5rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .login-container button:hover { background-color: #0056b3; }
-        .error { color: #dc3545; margin-bottom: 0.75rem; font-size: 0.9rem; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>huelogs</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "Courier New", monospace;
+      font-size: 13px;
+      background: #0d1117;
+      color: #e6edf3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      width: 328px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 28px 24px 24px;
+    }
+    .logo {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #e6edf3;
+      margin-bottom: 20px;
+    }
+    .error {
+      background: rgba(248,81,73,.12);
+      color: #f85149;
+      border: 1px solid rgba(248,81,73,.3);
+      border-radius: 5px;
+      padding: 8px 10px;
+      font-size: 11px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    label {
+      display: block;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #8b949e;
+      margin-bottom: 6px;
+    }
+    input[type="password"] {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 0 10px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #e6edf3;
+      font-size: 13px;
+      font-family: inherit;
+      letter-spacing: 0.14em;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input[type="password"]::placeholder { color: #484f58; letter-spacing: normal; }
+    input[type="password"]:focus {
+      border-color: #58a6ff;
+      box-shadow: 0 0 0 3px rgba(88,166,255,.15);
+    }
+    button {
+      display: block;
+      width: 100%;
+      height: 34px;
+      background: #238636;
+      color: #fff;
+      border: 1px solid rgba(240,246,252,.1);
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    button:hover  { background: #2ea043; }
+    button:active { background: #238636; }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Hue Logs</h2>
-        {{ if .Error }}
-            <p class="error">{{ .Error }}</p>
-        {{ end }}
-        <form method="POST" action="/login">
-            <input type="password" name="api_key" placeholder="Enter API key" required autofocus>
-            <button type="submit">Sign in</button>
-        </form>
-    </div>
+  <div class="card">
+    <div class="logo">huelogs</div>
+    {{ if .Error }}
+    <div class="error">{{ .Error }}</div>
+    {{ end }}
+    <form method="POST" action="/login">
+      <label for="api_key">API key</label>
+      <input type="password" id="api_key" name="api_key" placeholder="••••••••••••••••" required autofocus>
+      <button type="submit">Sign in</button>
+    </form>
+  </div>
 </body>
 </html>
